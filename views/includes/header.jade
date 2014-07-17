@@ -1,0 +1,29 @@
+header
+    .navbar.navbar-default
+      .container
+        .navbar-header
+          a.navbar-brand(href='#') RETEC ARG.
+        .navbar-collapse.collapse
+            ul.nav.navbar-nav
+                if activeNav=='banners'
+                    li.active
+                        a(href='/banners')=('Banners')
+                else
+                    li
+                        a(href='/banners')=('Banners')
+                if activeNav=='locales'
+                    li.active
+                        a(href='/locales')=('Locales')
+                else
+                    li
+                        a(href='/locales')=('Locales')
+                if activeNav=='archivos'
+                    li.active
+                        a(href='/archivos')=('Archivos')
+                else
+                    li
+                        a(href='/archivos')=('Archivos')
+                endif
+            ul.nav.navbar-nav.navbar-right
+                li 
+                    a(href='/logout')=('LogOut')

@@ -1,0 +1,52 @@
+!!! 5
+//if lt IE 7
+	html.no-js.ie6.oldie(lang='en')
+//if IE 7
+	html.no-js.ie7.oldie(lang='en')
+//if IE 8
+	html.no-js.ie8.oldie(lang='en') 
+//[if gt IE 8]><!
+	html.no-js(lang='en')
+//<![end if]
+head
+	meta(charset='utf-8')
+	meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+	title=title
+	meta(name="description", content=description)
+	meta(name="author", content=author)
+	meta(name="viewport", content='width=device-width, initial-scale=1')
+	link(rel='stylesheet', href='js/libs/bootstrap/css/bootstrap.css')
+	link(rel='stylesheet', href='js/libs/bootstrap/css/bootstrap-theme.min.css')
+	link(rel='stylesheet', href='css/style.css')
+
+body
+	div(id='content')
+		.container.col-md-12
+			div(style="height: 100px;")
+
+		.container.col-md-3
+		.container.col-md-6
+			.panel.panel-default
+				.panel-heading
+					| Log In
+				.panel-body
+					block content
+						form.form-horizontal(action='/',method='post')
+							.form-group
+								label.col-sm-2.control-label(for='user') Usuario
+								.col-sm-10
+									input.form-control(type='text',name="usuario", placeholder='Usuario')
+							.form-group
+								label.col-sm-2.control-label(for='password') Constraseña
+								.col-sm-10
+									input.form-control(type='password',name="password", placeholder='Constraseña')
+							.form-group
+								.col-sm-offset-2.col-sm-10
+									.checkbox
+										label
+											input(type='checkbox')
+											| Remember me
+							.form-group
+								.col-sm-offset-2.col-sm-10
+									button.btn.btn-default(type='submit') Sign in
+		.container.col-md-3

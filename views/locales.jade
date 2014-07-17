@@ -1,0 +1,106 @@
+extends admin-layout
+block content
+    article.col-md-6
+        h2 Crear nuevo Local
+        hr
+        if message
+            div(role="alert").alert.alert-success
+                strong=message
+        form(action='/locales',method='post', enctype='multipart/form-data')
+            div.form-group
+                label(for='nombre')=('Nombre')
+                input(name='nombre',type='text').form-control
+
+            div.form-group
+                label(for='direccion')=('Dirección')
+                input(name='direccion',type='text').form-control
+
+            div.form-group
+                label(for='direccion_2')=('Dirección segunda linea')
+                input(name='direccion_2',type='text').form-control
+
+            div.form-group
+                label(for='provincia')=('Provincia')
+                select(name='provincia').form-control
+                    option(value='Buenos Aires') Buenos Aires
+                    option(value='Buenos Aires Capital') Buenos Aires Capital
+                    option(value='Catamarca') Catamarca
+                    option(value='Chaco') Chaco
+                    option(value='Chubut') Chubut
+                    option(value='Cordoba') Cordoba
+                    option(value='Corrientes') Corrientes
+                    option(value='Entre Rios') Entre Rios
+                    option(value='Formosa') Formosa
+                    option(value='Jujuy') Jujuy
+                    option(value='La Pampa') La Pampa
+                    option(value='La Rioja') La Rioja
+                    option(value='Mendoza') Mendoza
+                    option(value='Misiones') Misiones
+                    option(value='Neuquen') Neuquen
+                    option(value='Rio Negro') Rio Negro
+                    option(value='Salta') Salta
+                    option(value='San Juan') San Juan
+                    option(value='San Luis') San Luis
+                    option(value='Santa Cruz') Santa Cruz
+                    option(value='Santa Fe') Santa Fe
+                    option(value='Santiago del Estero') Santiago del Estero
+                    option(value='Tierra del Fuego') Tierra del Fuego
+                    option(value='Tucuman') Tucuman
+
+            div.form-group
+                label(for='date_from')=('Fecha desde')
+                input(name='date_from',type='text',id='datepicker').form-control
+
+            div.form-group
+                label(for='date_to')=('Fecha hasta')
+                input(name='date_to',type='text',id='datepicker-b').form-control
+
+            div.form-group
+                label(for='email')=('Email')
+                input(name='email',type='text').form-control
+
+            div.form-group
+                label(for='telefono')=('Telefono')
+                input(name='telefono',type='text').form-control
+
+            div.form-group
+                label(for='logo')=('Logo (img)')
+                input(name='logo',type='file')
+
+            div.form-group
+                label(for='foto')=('Foto (img)')
+                input(name='foto',type='file')
+
+            div.form-group
+                button(type='submit').btn.btn-primary
+                    | Guardar local nuevo
+
+    article.col-md-6
+        h2 Listado de Locales
+        hr
+        table.table.table-striped
+            tr
+                th= 'Nombre'
+                th= 'Logo'
+                th= 'Activo desde'
+                th= 'Activo hasta'
+                th= ''
+
+            each item in locales
+                tr
+                    td= item.nombre
+                    td
+                        a(href="/images/locales/" + item.logo)=item.logo
+                    td= item.date_from
+                    td= item.date_to
+                    td
+                        form(action='/locales/del', method='post', id=item.id)
+                            input(type='hidden', name='id', value=item.id)
+                            a(onclick="deleteConfirmation('" + item.id + "');").glyphicon.glyphicon-remove.text-danger
+    script.
+        function deleteConfirmation(id)
+        {
+            if(confirm("Estas seguro que queres borrar este item?")) {
+                document.getElementById(id).submit();
+            }
+        }

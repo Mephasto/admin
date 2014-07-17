@@ -1,0 +1,58 @@
+extends admin-layout
+block content
+    article.col-md-6
+        h2 Crear nuevo Banner
+        hr
+        if message
+            div(role="alert").alert.alert-success
+                strong=message
+        form(action='/banners',method='post',enctype='multipart/form-data')
+            div.form-group
+                label(for='nombre')=('Nombre')
+                input(name='nombre',type='text').form-control
+
+            div.form-group
+                label(for='date_from')=('Fecha desde')
+                input(name='date_from',type='text',id='datepicker').form-control
+
+            div.form-group
+                label(for='date_to')=('Fecha hasta')
+                input(name='date_to',type='text',id='datepicker-b').form-control
+
+            div.form-group
+                label(for='foto')=('Foto (img)')
+                input(name='foto',type='file')
+
+            div.form-group
+                button(type='submit').btn.btn-primary
+                    | Guardar banner
+
+    article.col-md-6
+        h2 Listado de Banners
+        hr
+        table.table.table-striped
+            tr
+                th= 'Nombre'
+                th= 'Imagen'
+                th= 'Activo desde'
+                th= 'Activo hasta'
+                th= ''
+
+            each item in banners
+                tr
+                    td= item.nombre
+                    td
+                        a(href="/images/banners/" + item.imagen)=item.imagen
+                    td= item.date_from
+                    td= item.date_to
+                    td
+                        form(action='/banners/del', method='post', id=item.id)
+                            input(type='hidden', name='id', value=item.id)
+                            a(onclick="deleteConfirmation('" + item.id + "');").glyphicon.glyphicon-remove.text-danger
+    script.
+        function deleteConfirmation(id) 
+        {
+            if(confirm("Estas seguro que queres borrar este item?")) {
+                document.getElementById(id).submit();
+            }
+        }
