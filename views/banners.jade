@@ -12,6 +12,10 @@ block content
                 input(name='nombre',type='text').form-control
 
             div.form-group
+                label(for='link')=('Link')
+                input(name='link',type='text').form-control
+
+            div.form-group
                 label(for='date_from')=('Fecha desde')
                 input(name='date_from',type='text',id='datepicker').form-control
 
@@ -20,8 +24,8 @@ block content
                 input(name='date_to',type='text',id='datepicker-b').form-control
 
             div.form-group
-                label(for='foto')=('Foto (img)')
-                input(name='foto',type='file')
+                label(for='imagen')=('Imagen')
+                input(name='imagen',type='file')
 
             div.form-group
                 button(type='submit').btn.btn-primary

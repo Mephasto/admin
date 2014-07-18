@@ -33,7 +33,6 @@ server.locals = {
 ///////////////////////////////////////////
 
 server.get('/', function(req,res){
-  console.log(req.session);
   res.render('index.jade', { 
               title : server.locals.title + ' - Log In'
             }
@@ -42,7 +41,6 @@ server.get('/', function(req,res){
 
 server.post('/', function (req, res) {
   var post = req.body;
-  console.log(req.body);
   if (post.usuario === 'retec-admin' && post.password === 'q1w2e3r4') {
     req.session.user_id = 'retec-admin';
     res.redirect('/banners');
@@ -89,9 +87,9 @@ server.post('/banners', function(req,res){
   //new Banner
   var banner = new models.Banner(req.body);
   // cheking files
-  banner.imagen = req.files.foto.originalFilename;
+  banner.imagen = req.files.imagen.originalFilename;
   // saving files
-  fs.readFile(req.files.foto.path, function (err, data) {
+  fs.readFile(req.files.imagen.path, function (err, data) {
     // ...
     var newPath = __dirname + "/static/images/banners/" + banner.imagen;
     fs.writeFile(newPath, data, function (err) {
@@ -141,7 +139,7 @@ server.post('/banners/del', function(req,res){
 // GET: Locales
 server.get('/locales', checkAuth, function(req,res){
   var query = models.Local.find();
-  query.sort('date_to').execFind(function (err, locales) {
+  query.sort('provincia').execFind(function (err, locales) {
     console.log(locales);
     if(err === null){
       res.render('locales.jade', { 
@@ -294,7 +292,18 @@ server.get('/getBanners', function(req,res){
   query.sort('date_to').execFind(function (err, banners) {
     console.log(err);
     if(err === null){
-      res.send(banners);
+      res.send(req.query.callback + "(" + JSON.stringify(banners) + ");");
+    }
+  });
+});
+
+server.get('/getLocales', function(req,res){
+  console.log('getLocales')
+  var query = models.Local.find();
+  query.sort('provincia').execFind(function (err, locales) {
+    console.log(err);
+    if(err === null){
+      res.send(req.query.callback + "(" + JSON.stringify(locales) + ");");
     }
   });
 });
