@@ -2,6 +2,8 @@
 var express = require('express')
     , mongoose = require('mongoose')
     , fs = require('fs')
+    , gm = require("gm")
+    , im = gm.subClass({ imageMagick: true })
     , port = (process.env.PORT || 9091);
 
 //Setup Express
@@ -15,7 +17,8 @@ server.use(express.static(__dirname + '/static'));
 server.listen(port);
 
 //DB connection
-mongoose.connect('mongodb://retec-admin:q1w2e3r4@ds027789.mongolab.com:27789/retec');
+// PRODUCTION //mongoose.connect('mongodb://retec-admin:q1w2e3r4@ds027789.mongolab.com:27789/retec');
+mongoose.connect('mongodb://developer:admin1@ds059908.mongolab.com:59908/reted-dev');
 var models = require('./models');
 
 server.locals = { 
@@ -136,63 +139,105 @@ server.post('/banners/del', function(req,res){
 //              Locales                  //
 ///////////////////////////////////////////
 
-// GET: Locales
+///////////////// GET /////////////////////
 server.get('/locales', checkAuth, function(req,res){
-  var query = models.Local.find();
-  query.sort('provincia').execFind(function (err, locales) {
-    console.log(locales);
-    if(err === null){
-      res.render('locales.jade', { 
-                  title : server.locals.title + ' - Locales',
-                  locales : locales,
-                  activeNav : 'locales'
-                }
-      );
+  return models.Local.findById(req.query.id, function (err, local_edit) {
+    // FEEDBACK Messages
+    var message = ''; var messageType = '';
+    if (req.cookies.message != 'undefined') {
+      message = req.cookies.message;
+      messageType = req.cookies.messageType;
     }
+    
+    var query = models.Local.find();
+    query.sort('provincia').execFind(function (err, locales) {
+      if(err === null){
+        if(local_edit === undefined || local_edit === null) local_edit = '';
+        res.render('locales.jade', { 
+                    title : server.locals.title + ' - Locales',
+                    locales : locales,
+                    localedit : local_edit,
+                    message : message,
+                    messageType : messageType,
+                    activeNav : 'locales'
+                  }
+        );
+      }
+    });
   });
 });
-// POST: Locales
+///////////////// POST /////////////////////
 server.post('/locales', function(req,res){
-  console.log('POST to Locales');
-  var local = new models.Local(req.body);
-  // cheking LOGO
-  local.logo = req.files.logo.originalFilename;
-  // saving LOGO
-  fs.readFile(req.files.logo.path, function (err, data) {
-    // ...
-    var newPath = __dirname + "/static/images/locales/" + local.logo;
-    fs.writeFile(newPath, data, function (err) {
-      //console.log(err);
+  console.log(req.body);
+  if (req.body.action == "update") {
+    models.Local.findById(req.body.id, function(err, local){
+      if(!err){
+        local.nombre = req.body.nombre;
+        local.direccion = req.body.direccion;
+        local.direccion_2 = req.body.direccion_2;
+        local.provincia = req.body.provincia;
+        local.date_from = req.body.date_from;
+        local.date_to = req.body.date_to;
+        local.email = req.body.email;
+        local.telefono = req.body.telefono;
+        local.url = req.body.url;
+        // Imagen mas abajo ...
+        checkFoto(local);
+        checkLogo(local);
+        save(local, 'Se guardaron los cambios en "'+local.nombre+'".', 'success');
+      }
     });
-  });
 
-  // cheking FOTO
-  local.foto = req.files.foto.originalFilename;
-  // saving FOTO
-  fs.readFile(req.files.foto.path, function (err, data) {
-    // ...
-    var newPath = __dirname + "/static/images/locales/" + local.foto;
-    fs.writeFile(newPath, data, function (err) {
-      //console.log(err);
-    });
-  });
+  }else{
+    var local = new models.Local(req.body);
+    checkFoto(local);
+    checkLogo(local);
+    save(local, 'Se creó con exito el local "'+local.nombre+'".', 'success');
+  }
 
-  local.save(function(err){
-    if(err === null){
-      var query = models.Local.find();
-      query.sort('date_to').execFind(function (err, locales) {
-        res.render('locales.jade', 
-          { 
-            title : server.locals.title + ' - Locales',
-            locales : locales,
-            activeNav : 'locales',
-            message: 'Se creo el Local con exito.'
+  function checkFoto (local) {
+    if(req.files.foto.originalFilename) {
+      local.foto = req.files.foto.originalFilename;
+
+      fs.readFile(req.files.foto.path, function (err, data) {
+        var newPath = __dirname + "/static/images/locales/fotos/" + local.foto;
+        fs.writeFile(newPath, data, function (err) {
+          //console.log('Error File Write:' + err);
         });
       });
-    };
-  });
+    }
+  }
+  function checkLogo (local) {
+    if(req.files.logo.originalFilename) {
+      local.logo = req.files.logo.originalFilename;
+      // Upload
+      fs.readFile(req.files.logo.path, function (err, data) {
+        var newPath = __dirname + "/static/images/locales/logos/" + local.logo;
+        fs.writeFile(newPath, data, function (err) {
+            // Resize
+            im(newPath)
+            .resize(null, 63)
+            .noProfile()
+            .write(newPath, function (err) {
+              if (!err) console.log(' hooray! ');
+            });
+        });
+      });
+    }
+  }
+  function save (local, message, messageType) {
+    local.save(function(err){
+      if(err === null){
+        //console.log('Pill.Save error:' + err);
+        res.cookie('message', message, { expires: new Date(Date.now() + 5000), httpOnly: true });
+        res.cookie('messageType', messageType, { expires: new Date(Date.now() + 5000), httpOnly: true });
+        res.redirect(301, '/locales');
+      };
+    });
+  }
 });
-// POST: Locales - DELETE
+
+///////////////// DELETE /////////////////////
 server.post('/locales/del', function(req,res){
   console.log('POST to DELETE Locales');
   return models.Local.findById(req.body.id, function (err, local) {

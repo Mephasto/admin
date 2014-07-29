@@ -14,6 +14,7 @@ var localSchema = new Schema({
   , telefono	: String
   , logo      : String
   , foto      : String
+  , url       : String
 });
 
 var bannerSchema = new Schema({

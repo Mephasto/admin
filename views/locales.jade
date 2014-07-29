@@ -1,79 +1,104 @@
 extends admin-layout
 block content
     article.col-md-6
-        h2 Crear nuevo Local
+        if localedit
+            - var title = 'Editando: "'+localedit.nombre+'"'
+            h2(class="bg-success")= title
+        else
+            h2 Crear nuevo Local
         hr
         if message
-            div(role="alert").alert.alert-success
+            - var klass = (messageType === 'success' ? 'alert-success' : 'alert-warning')
+            div(role="alert").alert.alert-dismissible(class=klass)
                 strong=message
         form(action='/locales',method='post', enctype='multipart/form-data')
+            if localedit
+                input(type="hidden", name="id", value=localedit.id);
+                input(type="hidden", name="action", value="update");
+            else
+                input(type="hidden", name="action", value="post");
             div.form-group
                 label(for='nombre')=('Nombre')
-                input(name='nombre',type='text').form-control
+                input(name='nombre',type='text', value=localedit.nombre).form-control
 
             div.form-group
                 label(for='direccion')=('Dirección')
-                input(name='direccion',type='text').form-control
+                input(name='direccion',type='text', value=localedit.direccion).form-control
 
             div.form-group
                 label(for='direccion_2')=('Dirección segunda linea')
-                input(name='direccion_2',type='text').form-control
+                input(name='direccion_2',type='text', value=localedit.direccion_2).form-control
 
             div.form-group
                 label(for='provincia')=('Provincia')
                 select(name='provincia').form-control
-                    option(value='Buenos Aires') Buenos Aires
-                    option(value='Buenos Aires Capital') Buenos Aires Capital
-                    option(value='Catamarca') Catamarca
-                    option(value='Chaco') Chaco
-                    option(value='Chubut') Chubut
-                    option(value='Cordoba') Cordoba
-                    option(value='Corrientes') Corrientes
-                    option(value='Entre Rios') Entre Rios
-                    option(value='Formosa') Formosa
-                    option(value='Jujuy') Jujuy
-                    option(value='La Pampa') La Pampa
-                    option(value='La Rioja') La Rioja
-                    option(value='Mendoza') Mendoza
-                    option(value='Misiones') Misiones
-                    option(value='Neuquen') Neuquen
-                    option(value='Rio Negro') Rio Negro
-                    option(value='Salta') Salta
-                    option(value='San Juan') San Juan
-                    option(value='San Luis') San Luis
-                    option(value='Santa Cruz') Santa Cruz
-                    option(value='Santa Fe') Santa Fe
-                    option(value='Santiago del Estero') Santiago del Estero
-                    option(value='Tierra del Fuego') Tierra del Fuego
-                    option(value='Tucuman') Tucuman
+                    option(value='Buenos Aires', selected=(localedit.url_type == 'Buenos Aires')) Buenos Aires
+                    option(value='Buenos Aires Capital', selected=(localedit.url_type == 'Buenos Aires Capital' )) Buenos Aires Capital
+                    option(value='Catamarca', selected=(localedit.url_type == 'Catamarca' )) Catamarca
+                    option(value='Chaco', selected=(localedit.url_type == 'Chaco' )) Chaco
+                    option(value='Chubut', selected=(localedit.url_type == 'Chubut' )) Chubut
+                    option(value='Cordoba', selected=(localedit.url_type == 'Cordoba' )) Cordoba
+                    option(value='Corrientes', selected=(localedit.url_type == 'Corrientes' )) Corrientes
+                    option(value='Entre Rios', selected=(localedit.url_type == 'Entre Rios' )) Entre Rios
+                    option(value='Formosa', selected=(localedit.url_type == 'Formosa' )) Formosa
+                    option(value='Jujuy', selected=(localedit.url_type == 'Jujuy' )) Jujuy
+                    option(value='La Pampa', selected=(localedit.url_type == 'La Pampa' )) La Pampa
+                    option(value='La Rioja', selected=(localedit.url_type == 'La Rioja' )) La Rioja
+                    option(value='Mendoza', selected=(localedit.url_type == 'Mendoza' )) Mendoza
+                    option(value='Misiones', selected=(localedit.url_type == 'Misiones' )) Misiones
+                    option(value='Neuquen', selected=(localedit.url_type == 'Neuquen' )) Neuquen
+                    option(value='Rio Negro', selected=(localedit.url_type == 'Rio Negro' )) Rio Negro
+                    option(value='Salta', selected=(localedit.url_type == 'Salta' )) Salta
+                    option(value='San Juan', selected=(localedit.url_type == 'San Juan' )) San Juan
+                    option(value='San Luis', selected=(localedit.url_type == 'San Luis' )) San Luis
+                    option(value='Santa Cruz', selected=(localedit.url_type == 'Santa Cruz' )) Santa Cruz
+                    option(value='Santa Fe', selected=(localedit.url_type == 'Santa Fe' )) Santa Fe
+                    option(value='Santiago del Estero', selected=(localedit.url_type == 'Santiago del Estero' )) Santiago del Estero
+                    option(value='Tierra del Fuego', selected=(localedit.url_type == 'Tierra del Fuego' )) Tierra del Fuego
+                    option(value='Tucuman', selected=(localedit.url_type == 'Tucuman' )) Tucuman
 
             div.form-group
                 label(for='date_from')=('Fecha desde')
-                input(name='date_from',type='text',id='datepicker').form-control
+                input(name='date_from',type='text',id='datepicker', value=localedit.date_from).form-control
 
             div.form-group
                 label(for='date_to')=('Fecha hasta')
-                input(name='date_to',type='text',id='datepicker-b').form-control
+                input(name='date_to',type='text',id='datepicker-b', value=localedit.date_to).form-control
 
             div.form-group
                 label(for='email')=('Email')
-                input(name='email',type='text').form-control
+                input(name='email',type='text', value=localedit.email).form-control
 
             div.form-group
                 label(for='telefono')=('Telefono')
-                input(name='telefono',type='text').form-control
+                input(name='telefono',type='text', value=localedit.telefono).form-control
 
+            div.form-group
+                label(for='url')=('Link url')
+                div.input-group
+                    div.input-group-addon= 'http://'
+                    input(name='url',type='text', value=localedit.url).form-control
             div.form-group
                 label(for='logo')=('Logo (img)')
-                input(name='logo',type='file')
-
+                pre
+                    if  localedit.logo
+                        img(src="/images/locales/logos/"+localedit.logo, alt="")
+                        input(name='logo',type='file')
+                    else
+                        input(name='logo',type='file')
             div.form-group
                 label(for='foto')=('Foto (img)')
-                input(name='foto',type='file')
+                pre
+                    if  localedit.foto
+                        img(src="/images/locales/fotos/"+localedit.foto, alt="")
+                        input(name='foto',type='file')
+                    else
+                        input(name='foto',type='file')
+                    
 
             div.form-group
                 button(type='submit').btn.btn-primary
-                    | Guardar local nuevo
+                    | Guardar local
 
     article.col-md-6
         h2 Listado de Locales
@@ -82,17 +107,32 @@ block content
             tr
                 th= 'Nombre'
                 th= 'Logo'
+                th= 'Foto'
                 th= 'Activo desde'
                 th= 'Activo hasta'
                 th= ''
+                th= ''
 
             each item in locales
-                tr
+                tr(class=item.id === localedit.id ? "success" : "")
                     td= item.nombre
                     td
-                        a(href="/images/locales/" + item.logo)=item.logo
+                        if item.logo
+                            a(href="/images/locales/logos/" + item.logo).glyphicon.glyphicon-picture.text-success
+                        else
+                            span.glyphicon.glyphicon-minus
+                    td
+                        if item.foto
+                            a(href="/images/locales/fotos/" + item.foto).glyphicon.glyphicon-picture.text-success
+                        else
+                            span.glyphicon.glyphicon-minus
+                            
                     td= item.date_from
                     td= item.date_to
+                    td
+                        form(action='/locales', method='get', id="edit"+item.id)
+                            input(type='hidden', name='id', value=item.id)
+                            a(onclick="document.getElementById('edit"+item.id+"').submit();").glyphicon.glyphicon-pencil.text-success
                     td
                         form(action='/locales/del', method='post', id=item.id)
                             input(type='hidden', name='id', value=item.id)

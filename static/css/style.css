@@ -1,3 +1,5 @@
+a.glyphicon-picture:hover,
+a.glyphicon-pencil:hover,
 a.glyphicon-remove:hover {
     cursor: pointer;
 }

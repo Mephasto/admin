@@ -7,7 +7,9 @@
     "express": "3.x",
     "jade": "0.26.3",
     "mongoose": "3.5.5",
-    "bootstrap": "3.2.x"
+    "bootstrap": "3.2.x",
+    "gm": "1.9.x",
+    "imagemagick": "x"
   },
   "devDependencies": {
     "vows": "0.5.x",
