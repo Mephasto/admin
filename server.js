@@ -216,7 +216,7 @@ server.post('/locales', function(req,res){
         fs.writeFile(newPath, data, function (err) {
             // Resize
             im(newPath)
-            .resize(null, 63)
+            .resize(null, null)
             .noProfile()
             .write(newPath, function (err) {
               if (!err) console.log(' hooray! ');
