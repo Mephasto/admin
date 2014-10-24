@@ -4,25 +4,21 @@ var express = require('express')
     , fs = require('fs')
     , gm = require("gm")
     , im = gm.subClass({ imageMagick: true })
-    , port = (process.env.PORT || 9091);
-
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var cookieSession = require('cookie-session');
+    , port = (process.env.PORT || 9092);
 
 //Setup Express
 var server = express();
 server.set('views', __dirname + '/views');
 server.set('view options', { layout: false });
-server.use(bodyParser());
-server.use(cookieParser());
+server.use(express.bodyParser());
+server.use(express.cookieParser());
 server.use(express.session({ secret: Date() }))
 server.use(express.static(__dirname + '/static'));
 server.listen(port);
 
 //DB connection
 mongoose.connect('mongodb://retec-admin:q1w2e3r4@ds027789.mongolab.com:27789/retec');
-// DEV //mongoose.connect('mongodb://developer:admin1@ds059908.mongolab.com:59908/reted-dev');
+// mongoose.connect('mongodb://developer:admin1@ds059908.mongolab.com:59908/reted-dev');
 var models = require('./models');
 
 server.locals = { 
