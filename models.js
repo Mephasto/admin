@@ -8,6 +8,7 @@ var localSchema = new Schema({
   , direccion	: String
   , direccion_2	: String
   , provincia	: String
+  , localidad : String
   , date_from	: String
   , date_to		: String
   , email     : String

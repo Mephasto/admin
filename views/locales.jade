@@ -58,6 +58,10 @@ block content
                     option(value='Tucuman', selected=(localedit.provincia == 'Tucuman' )) Tucuman
 
             div.form-group
+                label(for='localidad')=('Localidad')
+                input(name='localidad',type='text',value=localedit.localidad,style='text-transform: capitalize;').form-control
+
+            div.form-group
                 label(for='date_from')=('Fecha desde')
                 input(name='date_from',type='text',id='datepicker', value=localedit.date_from).form-control
 

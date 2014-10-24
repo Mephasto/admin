@@ -46,9 +46,11 @@ block content
                     td= item.date_from
                     td= item.date_to
                     td
-                        form(action='/archivos/del', method='post', id=item.id)
-                            input(type='hidden', name='id', value=item.id)
-                            a(onclick="deleteConfirmation('" + item.id + "');").glyphicon.glyphicon-remove.text-danger
+                        if session=='retec-admin'
+                            form(action='/archivos/del', method='post', id=item.id)
+                                input(type='hidden', name='id', value=item.id)
+                                a(onclick="deleteConfirmation('" + item.id + "');").glyphicon.glyphicon-remove.text-danger
+                        endif
     script.
         function deleteConfirmation(id) 
         {
