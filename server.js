@@ -116,7 +116,8 @@ server.post('/banners', function(req,res){
             title : server.locals.title + ' - Banners',
             banners : banners,
             activeNav : 'banners',
-            message: 'Se creo el Banner con exito.'
+            message: 'Se creo el Banner con exito.',
+            session: req.session.user_id
         });
       });
     };
@@ -128,7 +129,7 @@ server.post('/banners/del', function(req,res){
   console.log('POST to DELETE Banner');
   return models.Banner.findById(req.body.id, function (err, banner) {
     if (!banner){
-      return res.render('banners.jade', {message : 'No se pudo borrar!'}); 
+      return res.render('banners.jade', {message : 'No se pudo borrar!',session: req.session.user_id}); 
     }
     return banner.remove(function (err) {
       if (!err) {
@@ -137,7 +138,7 @@ server.post('/banners/del', function(req,res){
       } else {
         // NOT removed!
         console.log(err);
-        res.render('banners.jade', {message : 'Error! - {id: ' + id + '}'});
+        res.render('banners.jade', {message : 'Error! - {id: ' + id + '}',session: req.session.user_id});
       }
     });
   });
@@ -167,7 +168,8 @@ server.get('/locales', checkAuth, function(req,res){
                     localedit : local_edit,
                     message : message,
                     messageType : messageType,
-                    activeNav : 'locales'
+                    activeNav : 'locales',
+                    session: req.session.user_id
                   }
         );
       }
@@ -257,7 +259,7 @@ server.post('/locales/del', function(req,res){
   console.log('POST to DELETE Locales');
   return models.Local.findById(req.body.id, function (err, local) {
     if (!local){
-      return res.render('locales.jade', {message : 'No se pudo borrar!'}); 
+      return res.render('locales.jade', {message : 'No se pudo borrar!', session: req.session.user_id}); 
     }
     return local.remove(function (err) {
       if (!err) {
@@ -266,7 +268,7 @@ server.post('/locales/del', function(req,res){
       } else {
         // NOT removed!
         console.log(err);
-        res.render('locales.jade', {message : 'Error! - {id: ' + id + '}'});
+        res.render('locales.jade', {message : 'Error! - {id: ' + id + '}',session: req.session.user_id});
       }
     });
   });
@@ -319,7 +321,8 @@ server.post('/archivos', function(req,res){
             title : server.locals.title + ' - archivos',
             archivos : archivos,
             activeNav : 'archivos',
-            message: 'Se creo el Archivo con exito.'
+            message: 'Se creo el Archivo con exito.',
+            session: req.session.user_id
         });
       });
     };
@@ -331,7 +334,7 @@ server.post('/archivos/del', function(req,res){
   console.log('POST to DELETE Archivo');
   return models.Archivo.findById(req.body.id, function (err, archivo) {
     if (!archivo){
-      return res.render('archivos.jade', {message : 'No se pudo borrar!'});
+      return res.render('archivos.jade', {message : 'No se pudo borrar!', session: req.session.user_id});
     }
     return archivo.remove(function (err) {
       if (!err) {
@@ -340,7 +343,7 @@ server.post('/archivos/del', function(req,res){
       } else {
         // NOT removed!
         console.log(err);
-        res.render('archivos.jade', {message : 'Error! - {id: ' + id + '}'});
+        res.render('archivos.jade', {message : 'Error! - {id: ' + id + '}',session: req.session.user_id});
       }
     });
   });
