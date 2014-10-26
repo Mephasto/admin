@@ -6,19 +6,23 @@ var express = require('express')
     , im = gm.subClass({ imageMagick: true })
     , port = (process.env.PORT || 9092);
 
+var cookieParser = require('cookie-parser');
+var bodyParser = require('body-parser');
+var cookieSession = require('cookie-session');
+
 //Setup Express
 var server = express();
 server.set('views', __dirname + '/views');
 server.set('view options', { layout: false });
-server.use(express.bodyParser());
-server.use(express.cookieParser());
+server.use(bodyParser());
+server.use(cookieParser());
 server.use(express.session({ secret: Date() }))
 server.use(express.static(__dirname + '/static'));
 server.listen(port);
 
 //DB connection
 mongoose.connect('mongodb://retec-admin:q1w2e3r4@ds027789.mongolab.com:27789/retec');
-// mongoose.connect('mongodb://developer:admin1@ds059908.mongolab.com:59908/reted-dev');
+// DEV //mongoose.connect('mongodb://developer:admin1@ds059908.mongolab.com:59908/reted-dev');
 var models = require('./models');
 
 server.locals = { 
@@ -47,6 +51,9 @@ server.post('/', function (req, res) {
   if (post.usuario === 'retec-admin' && post.password === 'q1w2e3r4') {
     req.session.user_id = 'retec-admin';
     res.redirect('/banners');
+  } else if (post.usuario === 'retec-client' && post.password === 'q1w2e3r4') {
+    req.session.user_id = 'retec-client';
+    res.redirect('/archivos');
   } else {
     res.send('Bad user/pass');
   }
@@ -54,7 +61,7 @@ server.post('/', function (req, res) {
 
 function checkAuth(req, res, next) {
   if (!req.session.user_id) {
-    res.send('You are not authorized to view this page');
+    res.redirect('/');
   } else {
     next();
   }
@@ -77,7 +84,8 @@ server.get('/banners', checkAuth, function(req,res){
       res.render('banners.jade', { 
                   title : server.locals.title + ' - Banners',
                   banners : banners,
-                  activeNav : 'banners'
+                  activeNav : 'banners',
+                  session: req.session.user_id
                 }
       );
     }
@@ -176,6 +184,7 @@ server.post('/locales', function(req,res){
         local.direccion = req.body.direccion;
         local.direccion_2 = req.body.direccion_2;
         local.provincia = req.body.provincia;
+        local.localidad = req.body.localidad.toLowerCase();;
         local.date_from = req.body.date_from;
         local.date_to = req.body.date_to;
         local.email = req.body.email;
@@ -202,7 +211,13 @@ server.post('/locales', function(req,res){
       fs.readFile(req.files.foto.path, function (err, data) {
         var newPath = __dirname + "/static/images/locales/fotos/" + local.foto;
         fs.writeFile(newPath, data, function (err) {
-          //console.log('Error File Write:' + err);
+            // Resize
+            im(newPath)
+            .resize(326, null)
+            .noProfile()
+            .write(newPath, function (err) {
+              if (!err) console.log(' hooray! ');
+            });
         });
       });
     }
@@ -263,13 +278,18 @@ server.post('/locales/del', function(req,res){
 
 // GET: Archivos
 server.get('/archivos', checkAuth, function(req,res){
+  console.log('get: Archivos');
   var query = models.Archivo.find();
+  console.log('find: Archivos');
   query.sort('date_to').execFind(function (err, archivos) {
+    console.log('sort: Archivos');
     if(err === null){
+      console.log('pre-render: Archivos');
       res.render('archivos.jade', { 
                   title : server.locals.title + ' - Archivos',
                   archivos : archivos,
-                  activeNav : 'archivos'
+                  activeNav : 'archivos',
+                  session: req.session.user_id
                 }
       );
     }
@@ -345,7 +365,7 @@ server.get('/getBanners', function(req,res){
 server.get('/getLocales', function(req,res){
   console.log('getLocales')
   var query = models.Local.find();
-  query.sort('provincia').execFind(function (err, locales) {
+  query.sort({provincia: 1, localidad: 1, nombre: 1}).execFind(function (err, locales) {
     console.log(err);
     if(err === null){
       res.send(req.query.callback + "(" + JSON.stringify(locales) + ");");
@@ -353,93 +373,9 @@ server.get('/getLocales', function(req,res){
   });
 });
 
-// // POST: Banner/del
-// server.post('/banner/del', function(req,res){
-//   return models.Banner.findById(req.body.id, function (err, banner) {
-//     if (!banner){
-//       return res.render('banners.jade', {message : 'No se pudo borrar!'}); 
-//     }
-//     return show.remove(function (err) {
-//       if (!err) {
-//         // removed!
-//         return res.render('banners.jade', {message : 'Banner borrado!'});
-//         console.log("removed");
-//       } else {
-//         res.render('banners.jade', {message : 'Error! - {id: ' + id + '}'});
-//         // NOT removed!
-//         console.log(err);
-//       }
-//     });
-//   });
-// });
-
-
-// // SHOWS
-// server.get('/shows', function(req,res){
-//   var query = models.Show.find();
-//   query.sort('date').execFind(function (err, shows) {
-//     if(err === null){
-//       res.render('shows.jade', { 
-//                   title : 'VIDRIO - Shows',
-//                   shows : shows,
-//                   activeNav : 'shows'
-//                 }
-//       );
-//     }
-//   });
-// });
-
-// // HOME
-// server.get('/', function(req,res){
-//   models.Show.find({$query: {}, $orderby: { date : 1 } }, function (err, shows) {
-//     if(err === null){
-//       res.render('index.jade', {
-//                   title : 'VIDRIO Trip Instrumental',
-//                   activeNav : 'home',
-//                   shows : shows,
-//                   blog : true
-//                 }
-//       );
-//     }
-//   });
-// });
-
-// // VIDEOS
-// server.get('/videos', function(req,res){
-//   res.render('videos.jade', {
-//               title : 'VIDRIO - Videos',
-//               activeNav : 'videos'
-//             }
-//   );
-// });
-
-// //ALBUMS
-// server.get('/albums', function(req,res){
-//   res.render('albums.jade', {
-//               title : 'VIDRIO - Albums',
-//               activeNav : 'albums'
-//             }
-//   );
-// });
-
-// //PHOTOS
-// server.get('/photos', function(req,res){
-//   res.render('photos.jade', {
-//               title : 'VIDRIO - Fotos',
-//               activeNav : 'fotos',
-//               gallery: true
-//             }
-//   );
-// });
-
-// //BIO
-// server.get('/bio', function(req,res){
-//   res.render('bio.jade', {
-//               title : 'VIDRIO - Bio',
-//               activeNav : 'bio'
-//             }
-//   );
-// });
+///////////////////////////////////////////
+//                500 404                //
+///////////////////////////////////////////
 
 //A Route for Creating a 500 Error (Useful to keep around)
 server.get('/500', function(req, res){
