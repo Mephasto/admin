@@ -4,18 +4,13 @@ var express = require('express')
     , fs = require('fs')
     , gm = require("gm")
     , im = gm.subClass({ imageMagick: true })
-    , bodyParser = require('body-parser')
-    , cookieParser = require('cookie-parser')
     , port = (process.env.PORT || 9092);
 
 //Setup Express
 var server = express();
 server.set('views', __dirname + '/views');
 server.set('view options', { layout: false });
-server.use(bodyParser.urlencoded({
-  extended: true
-}));
-server.use(bodyParser.json());
+server.use(express.bodyParser());
 server.use(express.cookieParser());
 server.use(express.session({ secret: Date() }))
 server.use(express.static(__dirname + '/static'));
@@ -180,6 +175,8 @@ server.get('/locales', checkAuth, function(req,res){
 ///////////////// POST /////////////////////
 server.post('/locales', function(req,res){
   console.log(req.body);
+  console.log('está logueando:/n');
+  console.log(req.body.action)
   if (req.body.action == "update") {
     models.Local.findById(req.body.id, function(err, local){
       if(!err){
