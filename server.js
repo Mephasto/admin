@@ -6,22 +6,15 @@ var express = require('express')
     , im = gm.subClass({ imageMagick: true })
     , port = (process.env.PORT || 9092);
 
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var cookieSession = require('cookie-session');
-
 //Setup Express
 var server = express();
 server.set('views', __dirname + '/views');
 server.set('view options', { layout: false });
-<<<<<<< HEAD
-server.use(bodyParser());
-server.use(cookieParser());
-=======
-server.use(bodyParser.urlencoded());
+server.use(bodyParser.urlencoded({
+  extended: true
+}));
 server.use(bodyParser.json());
 server.use(express.cookieParser());
->>>>>>> 098fb962de81e3106cbbd842333bc9248b9fbcd3
 server.use(express.session({ secret: Date() }))
 server.use(express.static(__dirname + '/static'));
 server.listen(port);

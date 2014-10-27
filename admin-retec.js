@@ -6,16 +6,13 @@ var express = require('express')
     , im = gm.subClass({ imageMagick: true })
     , port = (process.env.PORT || 9092);
 
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
-var cookieSession = require('cookie-session');
-
 //Setup Express
 var server = express();
 server.set('views', __dirname + '/views');
 server.set('view options', { layout: false });
-server.use(cookieParser());
-server.use(bodyParser.urlencoded());
+server.use(bodyParser.urlencoded({
+  extended: true
+}));
 server.use(bodyParser.json());
 server.use(express.cookieParser());
 server.use(express.session({ secret: Date() }))
@@ -181,6 +178,7 @@ server.get('/locales', checkAuth, function(req,res){
 ///////////////// POST /////////////////////
 server.post('/locales', function(req,res){
   console.log(req.body);
+	console.log('POST to LOCALES');
   if (req.body.action == "update") {
     models.Local.findById(req.body.id, function(err, local){
       if(!err){
@@ -271,7 +269,7 @@ server.post('/locales/del', function(req,res){
       } else {
         // NOT removed!
         console.log(err);
-        res.render('locales.jade', {message : 'Error! - {id: ' + id + '}',session: req.session.user_id});
+        res.render('locales.jade', {message : 'error! - {id: ' + id + '}',session: req.session.user_id});
       }
     });
   });
