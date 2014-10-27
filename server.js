@@ -4,7 +4,7 @@ var express = require('express')
     , fs = require('fs')
     , gm = require("gm")
     , im = gm.subClass({ imageMagick: true })
-    , port = (process.env.PORT || 9091);
+    , port = (process.env.PORT || 9092);
 
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -14,8 +14,14 @@ var cookieSession = require('cookie-session');
 var server = express();
 server.set('views', __dirname + '/views');
 server.set('view options', { layout: false });
+<<<<<<< HEAD
 server.use(bodyParser());
 server.use(cookieParser());
+=======
+server.use(bodyParser.urlencoded());
+server.use(bodyParser.json());
+server.use(express.cookieParser());
+>>>>>>> 098fb962de81e3106cbbd842333bc9248b9fbcd3
 server.use(express.session({ secret: Date() }))
 server.use(express.static(__dirname + '/static'));
 server.listen(port);
@@ -207,9 +213,10 @@ server.post('/locales', function(req,res){
   }
 
   function checkFoto (local) {
+    console.log(local)
     if(req.files.foto.originalFilename) {
       local.foto = req.files.foto.originalFilename;
-
+      console.log('req.files.foto = true');
       fs.readFile(req.files.foto.path, function (err, data) {
         var newPath = __dirname + "/static/images/locales/fotos/" + local.foto;
         fs.writeFile(newPath, data, function (err) {
