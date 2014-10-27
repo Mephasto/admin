@@ -4,6 +4,8 @@ var express = require('express')
     , fs = require('fs')
     , gm = require("gm")
     , im = gm.subClass({ imageMagick: true })
+    , bodyParser = require('body-parser');
+    , cookieParser = require('cookie-parser');
     , port = (process.env.PORT || 9092);
 
 //Setup Express
@@ -20,8 +22,8 @@ server.use(express.static(__dirname + '/static'));
 server.listen(port);
 
 //DB connection
-mongoose.connect('mongodb://retec-admin:q1w2e3r4@ds027789.mongolab.com:27789/retec');
-// DEV //mongoose.connect('mongodb://developer:admin1@ds059908.mongolab.com:59908/reted-dev');
+// PRODUCTION //mongoose.connect('mongodb://retec-admin:q1w2e3r4@ds027789.mongolab.com:27789/retec');
+mongoose.connect('mongodb://developer:admin1@ds059908.mongolab.com:59908/reted-dev');
 var models = require('./models');
 
 server.locals = { 
