@@ -10,7 +10,9 @@ var express = require('express')
 var server = express();
 server.set('views', __dirname + '/views');
 server.set('view options', { layout: false });
-server.use(bodyParser.urlencoded());
+server.use(bodyParser.urlencoded({
+  extended: true
+}));
 server.use(bodyParser.json());
 server.use(express.cookieParser());
 server.use(express.session({ secret: Date() }))
