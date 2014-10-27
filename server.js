@@ -4,8 +4,8 @@ var express = require('express')
     , fs = require('fs')
     , gm = require("gm")
     , im = gm.subClass({ imageMagick: true })
-    , bodyParser = require('body-parser');
-    , cookieParser = require('cookie-parser');
+    , bodyParser = require('body-parser')
+    , cookieParser = require('cookie-parser')
     , port = (process.env.PORT || 9092);
 
 //Setup Express
