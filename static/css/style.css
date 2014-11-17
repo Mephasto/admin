@@ -4,6 +4,10 @@ a.glyphicon-remove:hover {
     cursor: pointer;
 }
 
+.actions{
+	margin: 0 0 18px 16px;
+}
+
 ul li.folder {
 	margin-bottom: 10px;
 	font-weight: bold;
@@ -29,4 +33,8 @@ ul li.un-fold ul {
 }
 ul ul {
 	margin-top: 20px;
+}
+
+.add-new-file, .list-all-files {
+	display: none;
 }
