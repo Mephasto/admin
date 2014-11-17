@@ -1,6 +1,21 @@
 extends admin-layout
 block content
-    article.col-md-6
+    article.col-md-12.list-all-folders
+        each item in carpetas
+            ul.list-group.A
+                li(class="folder fold list-group-item")
+                    span(class="badge")= 14
+                    span= item.name
+                    ul.list-group.B
+                        each file in archivos
+                            if file.folder == item.folder
+                                li(class="file list-group-item")
+                                    span(class="name")= file.nombre
+                                    a(class="url", href=file.file)
+                                        span.glyphicon.glyphicon-download-alt
+                                        span= file.file
+
+    article.col-md-6.add-new-file
         h2 Subir nuevo Archivo
         hr
         if message
@@ -10,6 +25,12 @@ block content
             div.form-group
                 label(for='nombre')=('Nombre')
                 input(name='nombre',type='text').form-control
+
+            div.form-group
+                label(for='folder')=('Carpeta')
+                select(name='folder').form-control
+                    each item in carpetas
+                        option(value=item.folder)= item.name
 
             div.form-group
                 label(for='date_from')=('Fecha desde')
@@ -27,7 +48,7 @@ block content
                 button(type='submit').btn.btn-primary
                     | Subir Archivo
 
-    article.col-md-6
+    article.col-md-6.list-all-files
         h2 Listado de Archivos
         hr
         table.table.table-striped
@@ -37,6 +58,7 @@ block content
                 th= 'Activo desde'
                 th= 'Activo hasta'
                 th= ''
+                th= ''
 
             each item in archivos
                 tr
@@ -45,6 +67,9 @@ block content
                         a(href="/uploaded/" + item.file)=item.file
                     td= item.date_from
                     td= item.date_to
+                    each name in carpetas
+                        if name.folder == item.folder
+                            td(title=name.name,class="glyphicon glyphicon-folder-open")= ' '
                     td
                         if session=='retec-admin'
                             form(action='/archivos/del', method='post', id=item.id)

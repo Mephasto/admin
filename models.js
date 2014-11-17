@@ -28,11 +28,19 @@ var bannerSchema = new Schema({
 
 var archivoSchema = new Schema({
     nombre      : String
+  , folder      : Number
   , date_from   : String
   , date_to     : String
   , file        : String
 });
 
+var carpetaSchema = new Schema({
+    folder      : Number
+  , name        : String
+});
+
+
 exports.Local = mongoose.model('Local', localSchema);
 exports.Banner = mongoose.model('Banner', bannerSchema);
 exports.Archivo = mongoose.model('Archivo', archivoSchema);
+exports.Carpeta = mongoose.model('Carpeta', carpetaSchema);

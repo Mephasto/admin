@@ -3,3 +3,30 @@ a.glyphicon-pencil:hover,
 a.glyphicon-remove:hover {
     cursor: pointer;
 }
+
+ul li.folder {
+	margin-bottom: 10px;
+	font-weight: bold;
+}
+ul li.folder:hover {
+	cursor: pointer;
+}
+ul li {
+	padding-left: 20px;
+	font-weight: normal;
+}
+ul li a {
+	margin-left: 20px;
+}
+ul li a span {
+	padding-right: 10px;
+}
+ul li.fold ul {
+	display: none;
+}
+ul li.un-fold ul {
+	display: block;
+}
+ul ul {
+	margin-top: 20px;
+}

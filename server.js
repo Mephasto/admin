@@ -279,26 +279,29 @@ server.post('/locales/del', function(req,res){
 
 // GET: Archivos
 server.get('/archivos', checkAuth, function(req,res){
-  console.log('get: Archivos');
   var query = models.Archivo.find();
-  console.log('find: Archivos');
   query.sort('date_to').execFind(function (err, archivos) {
-    console.log('sort: Archivos');
     if(err === null){
-      console.log('pre-render: Archivos');
-      res.render('archivos.jade', { 
-                  title : server.locals.title + ' - Archivos',
-                  archivos : archivos,
-                  activeNav : 'archivos',
-                  session: req.session.user_id
-                }
-      );
+      var query2 = models.Carpeta.find();
+      query2.sort('name').execFind(function (err, carpetas){
+        if(err === null){
+          console.log(carpetas);
+          res.render('archivos.jade', { 
+                      title : server.locals.title + ' - Archivos',
+                      archivos : archivos,
+                      carpetas : carpetas,
+                      activeNav : 'archivos',
+                      session: req.session.user_id
+                    }
+          );
+        }
+      }); 
     }
   });
 });
+
 // POST: Archivo
 server.post('/archivos', function(req,res){
-  console.log('POST to Archivos');
   //new Archivo
   var archivo = new models.Archivo(req.body);
   // cheking files
@@ -309,23 +312,19 @@ server.post('/archivos', function(req,res){
     var newPath = __dirname + "/static/uploaded/" + archivo.file;
     fs.writeFile(newPath, data, function (err) {
       //console.log(err);
+      save(archivo, 'Se subió con exito el archivo "'+archivo.nombre+'".', 'success');
     });
   });
-  archivo.save(function(err){
-    if(err === null){
-      var query = models.Archivo.find();
-      query.sort('date_to').execFind(function (err, archivos) {
-        res.render('archivos.jade', 
-          { 
-            title : server.locals.title + ' - archivos',
-            archivos : archivos,
-            activeNav : 'archivos',
-            message: 'Se creo el Archivo con exito.',
-            session: req.session.user_id
-        });
-      });
-    };
-  });
+
+  function save (archivo, message, messageType) {
+    archivo.save(function(err){
+      if(err === null){
+        res.cookie('message', message, { expires: new Date(Date.now() + 5000), httpOnly: true });
+        res.cookie('messageType', messageType, { expires: new Date(Date.now() + 5000), httpOnly: true });
+        res.redirect(301, '/archivos');
+      };
+    });
+  }
 });
 
 // POST: Archivo - DELETE
