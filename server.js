@@ -232,7 +232,7 @@ server.post('/locales', function(req,res){
         fs.writeFile(newPath, data, function (err) {
             // Resize
             im(newPath)
-            .resize(null, null)
+            .resize(null, 63)
             .noProfile()
             .write(newPath, function (err) {
               if (!err) console.log(' hooray! ');
@@ -280,7 +280,7 @@ server.post('/locales/del', function(req,res){
 // GET: Archivos
 server.get('/archivos', checkAuth, function(req,res){
   var query = models.Archivo.find();
-  query.sort('date_to').execFind(function (err, archivos) {
+  query.sort('nombre').execFind(function (err, archivos) {
     if(err === null){
       var query2 = models.Carpeta.find();
       query2.sort('name').execFind(function (err, carpetas){
