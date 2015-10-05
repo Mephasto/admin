@@ -18,14 +18,15 @@ header
                     else
                         li
                             a(href='/locales')=('Locales')
-
+                        endif
+                    
                 if activeNav=='archivos'
                     li.active
                         a(href='/archivos')=('Archivos')
                 else
                     li
                         a(href='/archivos')=('Archivos')
-
+                    endif
             ul.nav.navbar-nav.navbar-right
                 li 
                     a(href='/logout')=('LogOut')
