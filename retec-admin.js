@@ -75,7 +75,7 @@ server.get('/logout', function (req, res) {
 // GET: Banners
 server.get('/banners', checkAuth, function(req,res){
   var query = models.Banner.find();
-  query.sort('date_to').execFind(function (err, banners) {
+  query.sort('date_to').exec(function (err, banners) {
     if(err === null){
       res.render('banners.jade', { 
                   title : server.locals.title + ' - Banners',
@@ -106,7 +106,7 @@ server.post('/banners', function(req,res){
   banner.save(function(err){
     if(err === null){
       var query = models.Banner.find();
-      query.sort('date_to').execFind(function (err, banners) {
+      query.sort('date_to').exec(function (err, banners) {
         res.render('banners.jade', 
           { 
             title : server.locals.title + ' - Banners',
@@ -155,7 +155,7 @@ server.get('/locales', checkAuth, function(req,res){
     }
     
     var query = models.Local.find();
-    query.sort('provincia').execFind(function (err, locales) {
+    query.sort('provincia').exec(function (err, locales) {
       if(err === null){
         if(local_edit === undefined || local_edit === null) local_edit = '';
         res.render('locales.jade', { 
@@ -280,10 +280,10 @@ server.post('/locales/del', function(req,res){
 // GET: Archivos
 server.get('/archivos', checkAuth, function(req,res){
   var query = models.Archivo.find();
-  query.sort('nombre').execFind(function (err, archivos) {
+  query.sort('nombre').exec(function (err, archivos) {
     if(err === null){
       var query2 = models.Carpeta.find();
-      query2.sort('name').execFind(function (err, carpetas){
+      query2.sort('name').exec(function (err, carpetas){
         if(err === null){
           console.log(carpetas);
           res.render('archivos.jade', { 
