@@ -17,8 +17,8 @@ server.use(express.static(__dirname + '/static'));
 server.listen(port);
 
 //DB connection
-// PRODUCTION //mongoose.connect('mongodb://retec-admin:q1w2e3r4@ds027789.mongolab.com:27789/retec');
-mongoose.connect('mongodb://developer:admin1@ds059908.mongolab.com:59908/reted-dev');
+mongoose.connect('mongodb://retec-admin:q1w2e3r4@ds041613.mongolab.com:41613/retec-a');
+//mongoose.connect('mongodb://developer:admin1@ds059908.mongolab.com:59908/reted-dev');
 var models = require('./models');
 
 server.locals = { 
@@ -355,7 +355,7 @@ server.post('/archivos/del', function(req,res){
 server.get('/getBanners', function(req,res){
   console.log('getBanners')
   var query = models.Banner.find();
-  query.sort('date_to').execFind(function (err, banners) {
+  query.sort('date_to').exec(function (err, banners) {
     console.log(err);
     if(err === null){
       res.send(req.query.callback + "(" + JSON.stringify(banners) + ");");
@@ -366,7 +366,7 @@ server.get('/getBanners', function(req,res){
 server.get('/getLocales', function(req,res){
   console.log('getLocales')
   var query = models.Local.find();
-  query.sort({provincia: 1, localidad: 1, nombre: 1}).execFind(function (err, locales) {
+  query.sort({provincia: 1, localidad: 1, nombre: 1}).exec(function (err, locales) {
     console.log(err);
     if(err === null){
       res.send(req.query.callback + "(" + JSON.stringify(locales) + ");");
